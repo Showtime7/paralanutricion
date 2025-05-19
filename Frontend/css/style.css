@@ -1,0 +1,299 @@
+/* ===== PALETA DE COLORES ===== */
+:root {
+    --verde-oscuro: #2E7D32;     /* Verde principal */
+    --verde-medio: #388E3C;      /* Verde secundario */
+    --verde-claro: #C8E6C9;      /* Verde claro para fondos */
+    --blanco: #FFFFFF;           /* Blanco puro */
+    --gris-claro: #F5F5F5;       /* Gris muy claro */
+    --texto-oscuro: #212121;     /* Texto principal */
+    --texto-gris: #757575;       /* Texto secundario */
+}
+
+/* ===== ESTILOS GLOBALES ===== */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--texto-oscuro);
+    line-height: 1.6;
+    background-color: var(--blanco);
+    padding-top: 80px; /* Para el navbar fijo */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--verde-oscuro);
+}
+
+/* ===== NAVEGACIÓN ===== */
+.navbar {
+    background-color: var(--blanco) !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    padding: 0.75rem 1rem;
+}
+
+.navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--verde-oscuro) !important;
+    font-size: 1.25rem;
+}
+
+.nav-link {
+    position: relative;
+    padding: 0.5rem 1rem;
+    color: var(--texto-oscuro) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--verde-oscuro) !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 1rem;
+    background-color: var(--verde-medio);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: calc(100% - 2rem);
+}
+
+/* ===== SECCIONES ===== */
+section {
+    padding: 5rem 0;
+    position: relative;
+    scroll-margin-top: 80px; /* Compensa el navbar fijo */
+}
+
+/* Hero section */
+#hero {
+    background-color: var(--gris-claro);
+    padding: 6rem 0;
+}
+
+/* Sección Conóceme */
+#conoceme {
+    background-color: var(--verde-claro);
+}
+
+/* ===== BOTONES ===== */
+.btn {
+    letter-spacing: 0.8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 0;
+    padding: 0.5rem 1.5rem;
+}
+
+.btn-success {
+    background-color: var(--verde-medio);
+    border-color: var(--verde-medio);
+}
+
+.btn-success:hover {
+    background-color: var(--verde-oscuro);
+    border-color: var(--verde-oscuro);
+    transform: translateY(-2px);
+}
+
+.btn-outline-success {
+    color: var(--verde-medio);
+    border-color: var(--verde-medio);
+    border-width: 2px;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--verde-medio);
+    color: var(--blanco);
+}
+
+/* ===== TARJETAS ===== */
+.card {
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: var(--verde-medio);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+
+/* ===== MODALES ===== */
+.modal-content {
+    border: none;
+    border-radius: 0;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--verde-claro);
+}
+
+.modal-title {
+    font-weight: 500;
+    color: var(--verde-oscuro);
+    position: relative;
+    padding-left: 1rem;
+}
+
+.modal-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: var(--verde-medio);
+}
+
+/* ===== SCROLL SUAVE ===== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== EFECTOS ESPECIALES ===== */
+.fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.list-unstyled li {
+    transition: all 0.3s ease;
+    padding-left: 1.5rem;
+}
+
+.list-unstyled li:hover {
+    transform: translateX(5px);
+}
+
+/* ===== FORMULARIO DE CONTACTO ===== */
+.contact-form {
+    background-color: white;
+    padding: 2.5rem;
+    box-shadow: 0 5px 20px rgba(46, 125, 50, 0.1);
+    border-top: 4px solid var(--verde-medio);
+    transform: translateY(20px);
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.form-floating label {
+    color: var(--texto-gris);
+    font-weight: 400;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #dee2e6;
+    border-radius: 0 !important;
+    padding: 1rem 1.25rem;
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--verde-medio);
+    box-shadow: 0 0 0 0.25rem rgba(56, 142, 60, 0.25);
+}
+
+.form-control::placeholder {
+    color: transparent;
+}
+
+.btn-success[type="submit"] {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    min-width: 200px;
+}
+
+.btn-success[type="submit"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+.btn-success[type="submit"]:hover::after {
+    left: 100%;
+}
+
+/* Validación de formulario */
+.was-validated .form-control:valid,
+.was-validated .form-control:valid:focus {
+    border-color: var(--verde-medio);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%232e7d32' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+}
+
+.was-validated .form-control:invalid,
+.was-validated .form-control:invalid:focus {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    font-size: 0.85rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    section {
+        padding: 3rem 0;
+        scroll-margin-top: 70px;
+    }
+    
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
