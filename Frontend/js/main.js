@@ -130,63 +130,91 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Manejar botones de confirmación
-    document.getElementById('confirmBtn').addEventListener('click', function() {
-        alert('Consulta agendada exitosamente');
+    document.getElementById('confirmBtn').addEventListener('click', async function() {
+    try {
+        const formData = {
+            nombre: document.querySelector('#paymentForm input[type="text"]:first-of-type').value,
+            apellido: document.querySelector('#paymentForm input[type="text"]:last-of-type').value,
+            email: document.querySelector('#paymentForm input[type="email"]').value,
+            fecha: document.getElementById('appointmentDate').value,
+            previsión: document.getElementById('insuranceType').value,
+            valor: currentTotal,
+            tipo: 'online', // Puedes ajustar esto según tu lógica
+            pagado: false
+        };
         
-        // Cerrar modal y limpiar
+        const response = await fetch('http://localhost:5000/api/consultas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) throw new Error('Error al agendar');
+        
+        alert('Consulta agendada exitosamente');
         dateModal.hide();
+        
+        // Limpiar el modal y redirigir (mantén esta parte)
         const backdrop = document.querySelector('.modal-backdrop');
-        if (backdrop) {
-            backdrop.remove();
-        }
+        if (backdrop) backdrop.remove();
         document.body.style.overflow = 'auto';
         document.body.style.paddingRight = '0';
-        
-        // Redirigir a página principal
         window.location.href = 'index.html';
-    });
-    
-    document.getElementById('cancelBtn').addEventListener('click', function() {
-        document.getElementById('confirmationBox').classList.add('d-none');
-        document.getElementById('appointmentDate').value = '';
-    });
-
-        // ===== FORMULARIO DE CONTACTO =====
-    const contactForm = document.getElementById('contactForm');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (this.checkValidity()) {
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const submitText = submitBtn.querySelector('.submit-text');
-                const spinner = submitBtn.querySelector('.spinner-border');
-                
-                // Mostrar spinner y deshabilitar botón
-                submitText.textContent = 'Enviando...';
-                spinner.classList.remove('d-none');
-                submitBtn.disabled = true;
-                
-                // Simular envío (reemplazar con tu lógica real)
-                setTimeout(() => {
-                    // Aquí iría tu código AJAX para enviar el formulario
-                    
-                    // Mostrar mensaje de éxito
-                    alert('Mensaje enviado con éxito. Te responderé a la brevedad.');
-                    
-                    // Resetear formulario
-                    this.reset();
-                    
-                    // Restaurar botón
-                    submitText.textContent = 'Enviar mensaje';
-                    spinner.classList.add('d-none');
-                    submitBtn.disabled = false;
-                }, 1500);
-            } else {
-                this.classList.add('was-validated');
-            }
-        });
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Hubo un error al agendar. Por favor intenta nuevamente.');
     }
+});
+
+    // En el formulario de contacto
+contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (this.checkValidity()) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const submitText = submitBtn.querySelector('.submit-text');
+        const spinner = submitBtn.querySelector('.spinner-border');
+        
+        submitText.textContent = 'Enviando...';
+        spinner.classList.remove('d-none');
+        submitBtn.disabled = true;
+        
+        try {
+            const formData = {
+                nombre: document.getElementById('nombre').value,
+                apellido: document.getElementById('apellido').value,
+                genero: document.getElementById('genero').value,
+                telefono: document.getElementById('telefono').value,
+                email: document.getElementById('email').value,
+                consulta: document.getElementById('consulta').value
+            };
+            
+            const response = await fetch('http://localhost:5000/api/consultas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+            
+            alert('Mensaje enviado con éxito. Te responderé a la brevedad.');
+            this.reset();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un error al enviar el mensaje. Por favor intenta nuevamente.');
+        } finally {
+            submitText.textContent = 'Enviar mensaje';
+            spinner.classList.add('d-none');
+            submitBtn.disabled = false;
+        }
+    } else {
+        this.classList.add('was-validated');
+    }
+});  
+    
 });
