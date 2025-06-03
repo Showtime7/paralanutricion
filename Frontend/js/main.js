@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Configuración inicial
   const bookingModal = new bootstrap.Modal(
     document.getElementById("bookingModal")
   );
@@ -10,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const afternoonSlots = ["14:00", "15:00", "16:00", "17:00", "18:00"];
   const consultaValue = 45000;
 
-  // Formatear fecha
   function formatDate(date) {
     return date.toLocaleDateString("es-CL", {
       weekday: "short",
@@ -19,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Generar días de la semana
   function generateWeekDays(date) {
     const weekDaysContainer = document.getElementById("weekDaysContainer");
     weekDaysContainer.innerHTML = "";
@@ -44,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const isPast = day < new Date(new Date().setHours(0, 0, 0, 0));
       const isToday = day.toDateString() === new Date().toDateString();
 
-      // Determinar clases CSS
       let cardClasses = "card h-100 rounded-0 border";
       let dayNameClasses = "small day-name";
       let dayNumberClasses = "fw-bold day-number";
@@ -61,20 +57,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       dayElement.innerHTML = `
-      <div class="${cardClasses}">
-        <div class="card-body text-center p-1">
-          <div class="${dayNameClasses}">${day
+        <div class="${cardClasses}">
+          <div class="card-body text-center p-1">
+            <div class="${dayNameClasses}">${day
         .toLocaleDateString("es-CL", { weekday: "short" })
         .toUpperCase()
         .replace(".", "")}</div>
-          <div class="${dayNumberClasses}">${day.getDate()}</div>
-        </div>
-      </div>
-    `;
+            <div class="${dayNumberClasses}">${day.getDate()}</div>
+          </div>
+        </div>`;
 
       if (!isPast && !isWeekend) {
         dayElement.addEventListener("click", function () {
-          // Remover selección anterior
           document
             .querySelectorAll("#weekDaysContainer .card")
             .forEach((card) => {
@@ -83,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
               card.querySelector(".day-number").classList.remove("text-white");
             });
 
-          // Aplicar selección nueva
           const card = this.querySelector(".card");
           card.classList.add("selected-day");
           card.querySelector(".day-name").classList.add("text-white");
@@ -99,7 +92,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Generar horarios
   function generateTimeSlots() {
     const morningContainer = document.getElementById("morningSlots");
     const afternoonContainer = document.getElementById("afternoonSlots");
@@ -108,29 +100,27 @@ document.addEventListener("DOMContentLoaded", function () {
     afternoonContainer.innerHTML = "";
 
     morningSlots.forEach((time) => {
-      const slot = document.createElement("button");
-      slot.type = "button";
-      slot.className = "btn btn-outline-success btn-sm rounded-0 time-slot";
-      slot.textContent = `${time} AM`;
-      slot.dataset.time = `${time}:00`;
-
-      slot.addEventListener("click", () => selectTimeSlot(slot));
+      const slot = createSlotButton(time, "AM");
       morningContainer.appendChild(slot);
     });
 
     afternoonSlots.forEach((time) => {
-      const slot = document.createElement("button");
-      slot.type = "button";
-      slot.className = "btn btn-outline-success btn-sm rounded-0 time-slot";
-      slot.textContent = `${time} PM`;
-      slot.dataset.time = `${time}:00`;
-
-      slot.addEventListener("click", () => selectTimeSlot(slot));
+      const slot = createSlotButton(time, "PM");
       afternoonContainer.appendChild(slot);
     });
   }
 
-  // Seleccionar horario
+  function createSlotButton(time, period) {
+    const slot = document.createElement("button");
+    slot.type = "button";
+    slot.className = "btn btn-outline-success btn-sm rounded-0 time-slot";
+    slot.textContent = `${time} ${period}`;
+    slot.dataset.time = `${time}:00`;
+
+    slot.addEventListener("click", () => selectTimeSlot(slot));
+    return slot;
+  }
+
   function selectTimeSlot(slot) {
     document.querySelectorAll(".time-slot").forEach((s) => {
       s.classList.remove("selected", "btn-success", "text-white");
@@ -145,7 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("toStep2").disabled = !selectedDate;
   }
 
-  // Actualizar resumen de selección
   function updateSelectedTimeDisplay() {
     if (selectedDate && selectedTime) {
       const [hours, minutes] = selectedTime.split(":");
@@ -163,7 +152,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Navegación entre semanas
   document.getElementById("prevWeek").addEventListener("click", () => {
     currentDate.setDate(currentDate.getDate() - 7);
     generateWeekDays(currentDate);
@@ -176,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
     resetTimeSelection();
   });
 
-  // Resetear selección
   function resetTimeSelection() {
     selectedTime = null;
     document.querySelectorAll(".time-slot").forEach((s) => {
@@ -187,7 +174,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("toStep2").disabled = true;
   }
 
-  // Navegación entre pasos
   document.getElementById("toStep2").addEventListener("click", () => {
     document.getElementById("step1").classList.add("d-none");
     document.getElementById("step2").classList.remove("d-none");
@@ -198,32 +184,81 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("step1").classList.remove("d-none");
   });
 
-  // Confirmar reserva
   document
     .getElementById("patientDataForm")
-    .addEventListener("submit", function (e) {
+    .addEventListener("submit", async function (e) {
       e.preventDefault();
+
+      const nombre = document.getElementById("nombre").value;
+      const email = document.getElementById("email").value;
+      const tipo = document.querySelector(
+        'input[name="tipoConsulta"]:checked'
+      ).value;
+      const prevision = document.getElementById("prevision").value;
 
       const [hours, minutes] = selectedTime.split(":");
       const dateTime = new Date(selectedDate);
       dateTime.setHours(hours, minutes);
 
-      document.getElementById(
-        "confirmationDetails"
-      ).textContent = `Tu consulta ha sido agendada para el ${formatDate(
-        dateTime
-      )} a las ${dateTime.toLocaleTimeString("es-CL", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}.`;
+      try {
+        const checkResponse = await fetch(
+          "http://localhost:5000/api/consultas/check",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ fecha: dateTime }),
+          }
+        );
 
-      document.getElementById("step2").classList.add("d-none");
-      document.getElementById("step3").classList.remove("d-none");
+        const checkResult = await checkResponse.json();
 
-      // Aquí iría el fetch para enviar los datos al backend
+        if (!checkResult.disponible) {
+          alert("El horario ya está reservado. Por favor selecciona otro.");
+          return;
+        }
+
+        const nuevaConsulta = {
+          nombre,
+          email,
+          fecha: dateTime,
+          tipo,
+          previsión: prevision,
+          valor: consultaValue,
+          pagado: false,
+        };
+
+        const response = await fetch("http://localhost:5000/api/consultas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(nuevaConsulta),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          document.getElementById(
+            "confirmationDetails"
+          ).textContent = `Tu consulta ha sido agendada para el ${formatDate(
+            dateTime
+          )} a las ${dateTime.toLocaleTimeString("es-CL", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}.`;
+          document.getElementById("step2").classList.add("d-none");
+          document.getElementById("step3").classList.remove("d-none");
+        } else {
+          alert("Error al agendar la consulta: " + result.error);
+        }
+      } catch (error) {
+        console.error("Error al enviar consulta:", error);
+        alert("Hubo un problema al conectar con el servidor.");
+      }
     });
 
-  // Inicializar
   generateWeekDays(currentDate);
   generateTimeSlots();
 });
